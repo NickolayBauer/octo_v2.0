@@ -20,6 +20,12 @@ octo.y = _H - 50
 
 
 
+
+
+	  
+
+
+
 function octo:touch(e)
 	if (e.phase == "moved") then
 		--45 -266
@@ -30,18 +36,29 @@ function octo:touch(e)
 	-- body
 end
 
+local tapCount = 0
+local size = 150
+local tapText = display.newText( tapCount, display.contentCenterX,  display.contentCenterY, native.systemFont, size)
 
 
 
+ 
 
 
 local randomBall = function()
 	bomb = display.newImageRect( "images/bomb.png",100,100);
 	bomb.x = math.random( _W )
 	bomb.y = -50
+	tapCount = tapCount + 1
+	print(bomb.y,' ',bomb.x)
+	tapText.score = "hello"
 	physics.addBody( bomb, { density=2.9, friction=0.5, bounce=0.7, radius=24 } );
+	tapText.text =tapCount
 end
 
--- Call the above function 12 times
+
 timer.performWithDelay( 1000, randomBall, 100000 )
+
+
+
 octo:addEventListener("touch",octo)
