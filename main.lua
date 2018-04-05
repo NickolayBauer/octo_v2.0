@@ -61,7 +61,7 @@ local loseText = display.newText(someText, display.contentCenterX,  display.cont
 loseText:setFillColor(0,0,0)
 function octo:collision(e)
 	mamont = true
-	print(mamont)
+	
 	someText = " ☠ ☠ ☠"
 	loseText.text = someText
 
