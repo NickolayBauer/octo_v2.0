@@ -1,40 +1,32 @@
------------------------------------------------------------------------------------------
---
--- main.lua
---
------------------------------------------------------------------------------------------
-
--- Your code here
-_W = display.contentWidth;
-_H = display.contentHeight;
+local composer = require("composer"); -- вызов библиотеки Composer
+local widget = require("widget");
 local physics = require("physics");
-physics.start();
+local scene = composer.newScene(); -- создаём новую сцену
+function scene:create(event)
+	local sceneGroup = self.view;
+	
+	physics.start();
+		local background = display.newImageRect("images/b.jpg",_W,_H+50);
+		background.x =_W/2
+		background.y=_H/2
+		local octo = display.newImageRect("images/octo.png",150,100);
+		octo.x = _W/2
+		octo.y = _H - 50
+		physics.addBody( octo,"static", { density=2.9, friction=0.5, bounce=0.7, radius=40 } );
+
+ 
+		local mamont = false
 
 
-local background = display.newImageRect("images/b.jpg",_W,_H+50);
-background.x =_W/2
-background.y=_H/2
-local octo = display.newImageRect("images/octo.png",150,100);
-octo.x = _W/2
-octo.y = _H - 50
-physics.addBody( octo,"static", { density=2.9, friction=0.5, bounce=0.7, radius=40 } );
-
-
-
-
-	  
-local mamont = false
-
-
-function octo:touch(e)
-	if (e.phase == "moved") then
+		function octo:touch(e)
+		if (e.phase == "moved") then
 		--45 -266
-			if mamont  == false then
-			octo.x = e.x
-			end
-	end
+		if mamont  == false then
+		octo.x = e.x
+		end
+		end
 	-- body
-end
+		end
 
 
 local size = 150
@@ -50,36 +42,51 @@ local randomBall = function()
 	bomb = display.newImageRect( "images/bomb.png",100,100);
 	bomb.x = math.random( _W )
 	bomb.y = -50
-	
 	tapText.score = "hello"
 	physics.addBody( bomb, { density=2.9, friction=0.5, bounce=0.7, radius=24 } );
 	tapText.text = tapText.text + 1
 	end
 end
-local someText = ""
-local loseText = display.newText(someText, display.contentCenterX,  display.contentCenterY-200, native.systemFont, 60)
-loseText:setFillColor(0,0,0)
+
 function octo:collision(e)
+	if (e.phase == "ended") then
 	mamont = true
-	
-	someText = " ☠ ☠ ☠"
-	loseText.text = someText
+	local button = widget.newButton {
+			shape = 'roundedRect',
+    		raidus = 10,
+    		width = _W*0.85,
+    		height = '70',
 
-end
 
-function loseText:touch(e)
-	if (e.phase == "began") then
-		
-			mamont = false
-			tapText.text = 0
-			loseText.text = ''
+    		fillColor = { default={ 255,0, 0 }, over={ 0, 149/255, 59/255 } },
+		    labelColor = { default={ 1 }, over={ 1 } },
+			fontSize = 32,
+			label = "ещё раз?",
+			y = _H/2*0.30,
+			x = _W/2,
+			onPress = function (event)
+					
+					 event.target:removeSelf() 
+   					 event.target = nil
+					 mamont = false
+					 tapText.text = 0
+					end
+										}
+				
 	end
-	-- body
+
 end
+
+
 
 timer.performWithDelay( 1000, randomBall, 100000 )
-
-
 octo:addEventListener('collision',octo)
 octo:addEventListener("touch",octo)
-loseText:addEventListener('touch',loseText)
+
+----------------------------------------------------
+end
+
+scene:addEventListener("create", scene);
+return scene;
+
+
